@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Usuarios</title>
+    <title>Lista de Clientes</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- CSS personalizado -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
     <script>
@@ -34,7 +32,7 @@
 <div class="flex min-h-screen">
 
     <!-- SIDEBAR -->
-    <div th:replace="fragments/layout :: sidebar('usuarios')"></div>
+    <div th:replace="fragments/layout :: sidebar('clientes')"></div>
 
     <!-- CONTENIDO -->
     <main class="flex-1 p-6 lg:p-10 overflow-hidden">
@@ -43,30 +41,30 @@
         <section class="page-header">
 
             <div>
-                <small>Sistema de Gestión</small>
+                <small>Administración</small>
 
                 <h1>
-                    Lista de Usuarios
+                    Lista de Clientes
                 </h1>
 
                 <p>
-                    Gestiona, administra y controla los usuarios registrados en el sistema.
+                    Gestiona, administra y controla los clientes registrados en el sistema.
                 </p>
             </div>
 
             <div class="buttons">
 
-                <a th:href="@{/view/usuarios/form}"
+                <a th:href="@{/view/clientes/form}"
                    class="btn-custom btn-principal">
                     📝 Registrar
                 </a>
 
-                <a th:href="@{/view/usuarios/pdf}"
+                <a th:href="@{/view/clientes/pdf}"
                    class="btn-custom btn-naranja">
                     📄 Exportar PDF
                 </a>
 
-                <a th:href="@{/view/usuarios/excel}"
+                <a th:href="@{/view/clientes/excel}"
                    class="btn-custom btn-verde">
                     📊 Exportar Excel
                 </a>
@@ -76,9 +74,9 @@
         </section>
 
         <!-- ALERTA -->
-        <div th:if="${success}"
+        <div th:if="${message}"
              class="alert-success-custom"
-             th:text="${success}">
+             th:text="${message}">
         </div>
 
         <!-- TABLA -->
@@ -89,7 +87,7 @@
 
                 <div>
                     <h2>
-                        Usuarios Registrados
+                        Clientes Registrados
                     </h2>
 
                     <p>
@@ -102,8 +100,8 @@
 
                     <input type="text"
                            id="searchInput"
-                           data-table-target="tablaUsuarios"
-                           placeholder="Buscar usuario...">
+                           data-table-target="tablaClientes"
+                           placeholder="Buscar cliente...">
 
                     <span>🔍</span>
 
@@ -114,7 +112,7 @@
             <!-- CONTENEDOR -->
             <div class="table-container">
 
-                <table class="custom-table" id="tablaUsuarios">
+                <table class="custom-table" id="tablaClientes">
 
                     <thead>
                     <tr>
@@ -123,18 +121,15 @@
                         <th>Nombre</th>
                         <th>Tipo Documento</th>
                         <th>Documento</th>
+                        <th>Dirección</th>
                         <th>Teléfono</th>
                         <th>Correo</th>
-                        <th>Dirección</th>
-                        <th>Contraseña</th>
-                        <th>Fecha Nacimiento</th>
-                        <th>Observaciones</th>
                     </tr>
                     </thead>
 
                     <tbody>
 
-                    <tr th:each="usuario : ${usuarios}">
+                    <tr th:each="cliente : ${clientes}">
 
                         <!-- ACCIONES -->
                         <td>
@@ -142,18 +137,18 @@
                             <div class="actions">
 
                                 <!-- EDITAR -->
-                                <a th:href="@{'/view/usuarios/edit/' + ${usuario.id_usuarios}}"
+                                <a th:href="@{'/view/clientes/edit/' + ${cliente.id_cliente}}"
                                    class="btn-action btn-edit">
                                     ✏️
                                 </a>
 
                                 <!-- ELIMINAR -->
-                                <form th:action="@{'/view/usuarios/delete/' + ${usuario.id_usuarios}}"
+                                <form th:action="@{'/view/clientes/delete/' + ${cliente.id_cliente}}"
                                       method="post">
 
                                     <button type="submit"
                                             class="btn-action btn-delete"
-                                            onclick="return confirm('¿Está seguro que desea eliminar este usuario?')">
+                                            onclick="return confirm('¿Está seguro que desea eliminar este cliente?')">
                                         🗑️
                                     </button>
 
@@ -165,33 +160,22 @@
 
                         <!-- DATOS -->
                         <td class="text-id"
-                            th:text="${usuario.id_usuarios}">
+                            th:text="${cliente.id_cliente}">
                         </td>
 
-                        <td th:text="${usuario.nombre}"></td>
+                        <td th:text="${cliente.nombre}"></td>
 
-                        <td th:text="${usuario.tipo_documento}"></td>
+                        <td th:text="${cliente.tipo_documento}"></td>
 
-                        <td th:text="${usuario.documento}"></td>
+                        <td th:text="${cliente.documento}"></td>
 
-                        <td th:text="${usuario.telefono}"></td>
+                        <td th:text="${cliente.direccion}"></td>
+
+                        <td th:text="${cliente.telefono}"></td>
 
                         <td class="text-email"
-                            th:text="${usuario.correo}">
+                            th:text="${cliente.correo}">
                         </td>
-
-                        <td th:text="${usuario.direccion}"></td>
-
-                        <!-- PASSWORD -->
-                        <td>
-                            <span class="badge-password">
-                                Protegida
-                            </span>
-                        </td>
-
-                        <td th:text="${usuario.fecha_nacimiento}"></td>
-
-                        <td th:text="${usuario.observaciones}"></td>
 
                     </tr>
 
@@ -206,7 +190,6 @@
     </main>
 
 </div>
-
 
 <script th:src="@{/js/script.js}"></script>
 

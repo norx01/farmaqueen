@@ -57,6 +57,17 @@ body{
     min-height: 100vh;
 }
 
+.sidebar-container{
+    display: flex;
+    align-self: stretch;
+    min-height: 100vh;
+}
+
+#sidebar{
+    min-height: 100vh;
+    height: 100%;
+}
+
 /* =========================
    CONTENIDO
 ========================= */
@@ -185,6 +196,22 @@ body{
     box-shadow: var(--sombra);
 }
 
+.alert-error-custom{
+    background: #fef2f2;
+    border-left: 6px solid #dc2626;
+
+    padding: 18px 20px;
+
+    border-radius: 15px;
+
+    color: #991b1b;
+    font-weight: 600;
+
+    margin-bottom: 25px;
+
+    box-shadow: var(--sombra);
+}
+
 /* =========================
    CARD TABLA
 ========================= */
@@ -223,6 +250,104 @@ body{
 .card-table-header p{
     color: var(--azul-claro);
     margin-top: 5px;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+.dashboard-card{
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: var(--sombra);
+    border: 1px solid rgba(255,255,255,.7);
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.dashboard-card-icon{
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.6rem;
+    flex: 0 0 auto;
+}
+
+.dashboard-card-label{
+    color: var(--gris);
+    font-weight: 700;
+    font-size: .9rem;
+}
+
+.dashboard-card-value{
+    color: var(--oscuro);
+    font-weight: 900;
+    font-size: 1.8rem;
+    margin-top: 5px;
+}
+
+.dashboard-mini-stat{
+    background: #f9fafb;
+    border: 1px solid #eef2f7;
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.dashboard-mini-stat span{
+    color: var(--gris);
+    font-weight: 700;
+}
+
+.dashboard-mini-stat strong{
+    color: var(--principal);
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.dashboard-stock-item{
+    background: #f9fafb;
+    border: 1px solid #eef2f7;
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transicion);
+}
+
+.dashboard-stock-item:hover{
+    border-color: var(--principal);
+    transform: translateY(-2px);
+}
+
+.dashboard-stock-item strong{
+    display: block;
+    color: var(--oscuro);
+}
+
+.dashboard-stock-item span{
+    display: block;
+    color: var(--gris);
+    font-size: .85rem;
+    margin-top: 3px;
+}
+
+.dashboard-stock-item p{
+    color: var(--naranja);
+    font-weight: 900;
+    white-space: nowrap;
 }
 
 /* =========================
@@ -296,6 +421,14 @@ body{
 
 .custom-table tbody tr:hover{
     background: rgba(192,214,223,.2);
+}
+
+.clickable-row{
+    cursor: pointer;
+}
+
+.clickable-row:hover{
+    background: rgba(161,22,146,.08) !important;
 }
 
 /* =========================

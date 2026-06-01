@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        principal: '#a11692',
+                        naranja: '#fc7a1e',
+                        azulClaro: '#c0d6df',
+                        verde: '#517664',
+                        oscuro: '#0d3b66'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-[#c0d6df] via-[#eef4f7] to-white min-h-screen">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/layout :: sidebar('reportes')"></div>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-6 lg:p-10 overflow-hidden">
+
+        <!-- HEADER -->
+        <section class="page-header">
+
+            <div>
+                <small>Estadísticas</small>
+
+                <h1>
+                    Reportes
+                </h1>
+
+                <p>
+                    Analiza ventas, productos e inventario por rango de fechas.
+                </p>
+            </div>
+
+            <div class="buttons">
+                <a th:href="@{/reportes/pdf(fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}"
+                   class="btn-custom btn-naranja">
+                    📄 Exportar PDF
+                </a>
+
+                <a th:href="@{/reportes/excel(fechaInicio=${fechaInicio}, fechaFin=${fechaFin})}"
+                   class="btn-custom btn-verde">
+                    📊 Exportar Excel
+                </a>
+            </div>
+
+        </section>
+
+        <!-- FILTROS -->
+        <section class="bg-white rounded-[30px] shadow-xl overflow-hidden mb-8">
+
+            <div class="bg-[#0d3b66] px-8 py-6">
+                <h2 class="text-2xl font-bold text-white">
+                    Filtros
+                </h2>
+                <p class="text-[#c0d6df] mt-1">
+                    Selecciona el rango que deseas consultar.
+                </p>
+            </div>
+
+            <form th:action="@{/reportes}"
+                  method="get"
+                  class="p-8 grid grid-cols-1 md:grid-cols-[1fr_1fr_auto] gap-4 items-end">
+
+                <div>
+                    <label class="block mb-2 font-bold text-[#0d3b66]">
+                        Fecha inicio
+                    </label>
+                    <input type="date"
+                           name="fechaInicio"
+                           th:value="${fechaInicio}"
+                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-bold text-[#0d3b66]">
+                        Fecha fin
+                    </label>
+                    <input type="date"
+                           name="fechaFin"
+                           th:value="${fechaFin}"
+                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                </div>
+
+                <button type="submit"
+                        class="btn-custom btn-principal justify-center">
+                    🔎 Consultar
+                </button>
+
+            </form>
+
+        </section>
+
+        <!-- METRICAS -->
+        <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#a11692]">
+                    💰
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Total vendido
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${totalVentas}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#fc7a1e]">
+                    🧾
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Ventas
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${cantidadVentas}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#517664]">
+                    📈
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Ticket promedio
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${ticketPromedio}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#0d3b66]">
+                    ⚠️
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Stock bajo
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${#lists.size(productosStockBajo)}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
+
+            <!-- VENTAS -->
+            <section class="card-table">
+
+                <div class="card-table-header">
+
+                    <div>
+                        <h2>
+                            Ventas del periodo
+                        </h2>
+
+                        <p>
+                            Movimientos registrados entre las fechas seleccionadas.
+                        </p>
+                    </div>
+
+                    <div class="search-box">
+                        <input type="text"
+                               id="searchInput"
+                               data-table-target="tablaReportesVentas"
+                               placeholder="Buscar venta...">
+                        <span>🔍</span>
+                    </div>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table class="custom-table" id="tablaReportesVentas">
+
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Pago</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="venta : ${ventas}"
+                            class="clickable-row"
+                            th:onclick="|window.location.href='@{/view/ventas/detail/{id}(id=${venta.id_venta})}'|">
+                            <td class="text-id" th:text="${venta.id_venta}"></td>
+                            <td th:text="${venta.cliente.nombre}"></td>
+                            <td th:text="${#temporals.format(venta.fecha_hora, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${venta.medio_pago}"></td>
+                            <td th:text="${#lists.size(venta.detalles)}"></td>
+                            <td class="text-email" th:text="${venta.total}"></td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(ventas)}">
+                            <td colspan="6" class="text-center text-gray-500">
+                                No hay ventas en este periodo.
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- PANEL LATERAL -->
+            <aside class="space-y-6">
+
+                <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                    <div class="bg-[#0d3b66] px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">
+                            Productos más vendidos
+                        </h2>
+                        <p class="text-[#c0d6df] mt-1">
+                            Ranking por cantidad.
+                        </p>
+                    </div>
+
+                    <div class="p-6 space-y-3">
+
+                        <div th:each="producto, iter : ${productosMasVendidos}"
+                             th:if="${iter.index < 5}"
+                             class="dashboard-stock-item">
+                            <div>
+                                <strong th:text="${producto[0]}"></strong>
+                                <span th:text="${'Cantidad: ' + producto[1]}"></span>
+                            </div>
+                            <p th:text="${producto[2]}"></p>
+                        </div>
+
+                        <p th:if="${#lists.isEmpty(productosMasVendidos)}"
+                           class="text-gray-500 text-center py-4">
+                            No hay productos vendidos en este periodo.
+                        </p>
+
+                    </div>
+
+                </section>
+
+                <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                    <div class="bg-[#0d3b66] px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">
+                            Resumen general
+                        </h2>
+                        <p class="text-[#c0d6df] mt-1">
+                            Estado actual del sistema.
+                        </p>
+                    </div>
+
+                    <div class="p-8 space-y-4">
+
+                        <div class="dashboard-mini-stat">
+                            <span>Clientes</span>
+                            <strong th:text="${totalClientes}">0</strong>
+                        </div>
+
+                        <div class="dashboard-mini-stat">
+                            <span>Productos</span>
+                            <strong th:text="${totalProductos}">0</strong>
+                        </div>
+
+                        <div class="dashboard-mini-stat">
+                            <span>Alertas de inventario</span>
+                            <strong th:text="${#lists.size(productosStockBajo)}">0</strong>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                    <div class="bg-[#0d3b66] px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">
+                            Stock bajo
+                        </h2>
+                        <p class="text-[#c0d6df] mt-1">
+                            Productos por reponer.
+                        </p>
+                    </div>
+
+                    <div class="p-6 space-y-3">
+
+                        <a th:each="producto, iter : ${productosStockBajo}"
+                           th:if="${iter.index < 5}"
+                           th:href="@{'/view/productos/edit/' + ${producto.id_producto}}"
+                           class="dashboard-stock-item">
+                            <div>
+                                <strong th:text="${producto.nombre}"></strong>
+                                <span th:text="${'Código: ' + producto.codigo}"></span>
+                            </div>
+                            <p>
+                                <span th:text="${producto.stock}"></span>
+                                /
+                                <span th:text="${producto.stock_minimo}"></span>
+                            </p>
+                        </a>
+
+                        <p th:if="${#lists.isEmpty(productosStockBajo)}"
+                           class="text-gray-500 text-center py-4">
+                            No hay productos con stock bajo.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

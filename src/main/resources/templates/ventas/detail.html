@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Venta</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        principal: '#a11692',
+                        naranja: '#fc7a1e',
+                        azulClaro: '#c0d6df',
+                        verde: '#517664',
+                        oscuro: '#0d3b66'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-[#c0d6df] via-[#eef4f7] to-white min-h-screen">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/layout :: sidebar('ventas')"></div>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-6 lg:p-10 overflow-hidden">
+
+        <!-- HEADER -->
+        <section class="page-header">
+
+            <div>
+                <small>Facturación</small>
+
+                <h1>
+                    Detalle de Venta
+                </h1>
+
+                <p>
+                    Información completa de la venta seleccionada.
+                </p>
+            </div>
+
+            <div class="buttons">
+                <a th:href="@{/view/ventas}" class="btn-custom btn-verde">
+                    ← Volver
+                </a>
+            </div>
+
+        </section>
+
+        <div class="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6 items-start">
+
+            <!-- DETALLE -->
+            <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                <div class="bg-[#0d3b66] px-8 py-6">
+                    <h2 class="text-2xl font-bold text-white">
+                        Venta #<span th:text="${venta.id_venta}"></span>
+                    </h2>
+                    <p class="text-[#c0d6df] mt-1"
+                       th:text="${#temporals.format(venta.fecha_hora, 'dd/MM/yyyy HH:mm')}">
+                    </p>
+                </div>
+
+                <div class="p-8">
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+
+                        <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                            <p class="text-sm font-bold text-[#0d3b66] uppercase">
+                                Cliente
+                            </p>
+                            <p class="font-bold mt-2" th:text="${venta.cliente.nombre}"></p>
+                            <p class="text-gray-500" th:text="${venta.cliente.documento}"></p>
+                        </div>
+
+                        <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                            <p class="text-sm font-bold text-[#0d3b66] uppercase">
+                                Medio de pago
+                            </p>
+                            <p class="font-bold mt-2" th:text="${venta.medio_pago}"></p>
+                        </div>
+
+                        <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                            <p class="text-sm font-bold text-[#0d3b66] uppercase">
+                                Productos
+                            </p>
+                            <p class="font-bold mt-2" th:text="${#lists.size(venta.detalles)}"></p>
+                        </div>
+
+                    </div>
+
+                    <div class="table-container border border-gray-100 rounded-2xl">
+
+                        <table class="custom-table">
+
+                            <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Código</th>
+                                <th>Precio unitario</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr th:each="detalle : ${venta.detalles}">
+                                <td th:text="${detalle.producto.nombre}"></td>
+                                <td th:text="${detalle.producto.codigo}"></td>
+                                <td th:text="${detalle.precio_unitario}"></td>
+                                <td th:text="${detalle.cantidad}"></td>
+                                <td class="text-email" th:text="${detalle.subtotal}"></td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- RESUMEN -->
+            <aside class="bg-white rounded-[30px] shadow-xl overflow-hidden xl:sticky xl:top-8">
+
+                <div class="bg-[#0d3b66] px-8 py-6">
+                    <h2 class="text-2xl font-bold text-white">
+                        Total
+                    </h2>
+                    <p class="text-[#c0d6df] mt-1">
+                        Valor final de la venta.
+                    </p>
+                </div>
+
+                <div class="p-8">
+                    <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                        <p class="text-sm font-bold text-[#0d3b66] uppercase">
+                            Total venta
+                        </p>
+                        <p class="text-4xl font-black text-[#a11692] mt-2"
+                           th:text="${venta.total}">
+                        </p>
+                    </div>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

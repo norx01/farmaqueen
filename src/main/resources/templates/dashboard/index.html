@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        principal: '#a11692',
+                        naranja: '#fc7a1e',
+                        azulClaro: '#c0d6df',
+                        verde: '#517664',
+                        oscuro: '#0d3b66'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-[#c0d6df] via-[#eef4f7] to-white min-h-screen">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/layout :: sidebar('dashboard')"></div>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-6 lg:p-10 overflow-hidden">
+
+        <!-- HEADER -->
+        <section class="page-header">
+
+            <div>
+                <small>Sistema de Gestión</small>
+
+                <h1>
+                    Dashboard
+                </h1>
+
+                <p>
+                    Resumen general de ventas, inventario, clientes y usuarios.
+                </p>
+            </div>
+
+            <div class="buttons">
+                <a th:href="@{/view/ventas/form}" class="btn-custom btn-principal">
+                    🧾 Nueva Venta
+                </a>
+
+                <a th:href="@{/view/productos/form}" class="btn-custom btn-verde">
+                    📦 Producto
+                </a>
+            </div>
+
+        </section>
+
+        <!-- METRICAS -->
+        <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#a11692]">
+                    💰
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Ventas totales
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${totalGeneral}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#517664]">
+                    📅
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Vendido hoy
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${totalDia}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#fc7a1e]">
+                    🧾
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Ventas realizadas
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${totalVentas}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+            <article class="dashboard-card">
+                <div class="dashboard-card-icon bg-[#0d3b66]">
+                    📦
+                </div>
+                <div>
+                    <p class="dashboard-card-label">
+                        Productos
+                    </p>
+                    <h2 class="dashboard-card-value" th:text="${totalProductos}">
+                        0
+                    </h2>
+                </div>
+            </article>
+
+        </section>
+
+        <section class="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
+
+            <!-- VENTAS RECIENTES -->
+            <section class="card-table">
+
+                <div class="card-table-header">
+
+                    <div>
+                        <h2>
+                            Ventas recientes
+                        </h2>
+
+                        <p>
+                            Últimos movimientos registrados.
+                        </p>
+                    </div>
+
+                    <a th:href="@{/view/ventas}" class="btn-custom btn-verde">
+                        Ver ventas
+                    </a>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table class="custom-table">
+
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Pago</th>
+                            <th>Total</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr th:each="venta, iter : ${ventasRecientes}"
+                            th:if="${iter.index < 6}"
+                            class="clickable-row"
+                            th:onclick="|window.location.href='@{/view/ventas/detail/{id}(id=${venta.id_venta})}'|">
+                            <td class="text-id" th:text="${venta.id_venta}"></td>
+                            <td th:text="${venta.cliente.nombre}"></td>
+                            <td th:text="${#temporals.format(venta.fecha_hora, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${venta.medio_pago}"></td>
+                            <td class="text-email" th:text="${venta.total}"></td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(ventasRecientes)}">
+                            <td colspan="5" class="text-center text-gray-500">
+                                No hay ventas registradas.
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+            <!-- PANEL LATERAL -->
+            <aside class="space-y-6">
+
+                <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                    <div class="bg-[#0d3b66] px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">
+                            Resumen
+                        </h2>
+                        <p class="text-[#c0d6df] mt-1">
+                            Datos rápidos del sistema.
+                        </p>
+                    </div>
+
+                    <div class="p-8 space-y-4">
+
+                        <div class="dashboard-mini-stat">
+                            <span>Clientes registrados</span>
+                            <strong th:text="${totalClientes}">0</strong>
+                        </div>
+
+                        <div class="dashboard-mini-stat">
+                            <span>Usuarios registrados</span>
+                            <strong th:text="${totalUsuarios}">0</strong>
+                        </div>
+
+                        <div class="dashboard-mini-stat">
+                            <span>Productos en alerta</span>
+                            <strong th:text="${#lists.size(productosStockBajo)}">0</strong>
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                    <div class="bg-[#0d3b66] px-8 py-6">
+                        <h2 class="text-2xl font-bold text-white">
+                            Stock bajo
+                        </h2>
+                        <p class="text-[#c0d6df] mt-1">
+                            Productos en punto mínimo.
+                        </p>
+                    </div>
+
+                    <div class="p-6 space-y-3">
+
+                        <a th:each="producto, iter : ${productosStockBajo}"
+                           th:if="${iter.index < 5}"
+                           th:href="@{'/view/productos/edit/' + ${producto.id_producto}}"
+                           class="dashboard-stock-item">
+                            <div>
+                                <strong th:text="${producto.nombre}"></strong>
+                                <span th:text="${'Código: ' + producto.codigo}"></span>
+                            </div>
+                            <p>
+                                <span th:text="${producto.stock}"></span>
+                                /
+                                <span th:text="${producto.stock_minimo}"></span>
+                            </p>
+                        </a>
+
+                        <p th:if="${#lists.isEmpty(productosStockBajo)}"
+                           class="text-gray-500 text-center py-4">
+                            No hay productos con stock bajo.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

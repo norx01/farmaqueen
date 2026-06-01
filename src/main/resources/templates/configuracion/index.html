@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        principal: '#a11692',
+                        naranja: '#fc7a1e',
+                        azulClaro: '#c0d6df',
+                        verde: '#517664',
+                        oscuro: '#0d3b66'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-[#c0d6df] via-[#eef4f7] to-white min-h-screen">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/layout :: sidebar('configuracion')"></div>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-6 lg:p-10">
+
+        <!-- HEADER -->
+        <section class="page-header">
+
+            <div>
+                <small>Preferencias</small>
+
+                <h1>
+                    Configuración
+                </h1>
+
+                <p>
+                    Administra la información de tu cuenta y acceso al sistema.
+                </p>
+            </div>
+
+            <div class="buttons">
+                <a th:href="@{/logout}" class="btn-custom btn-naranja">
+                    🚪 Cerrar sesión
+                </a>
+            </div>
+
+        </section>
+
+        <div th:if="${message}"
+             class="alert-success-custom"
+             th:text="${message}">
+        </div>
+
+        <div th:if="${error}"
+             class="alert-error-custom"
+             th:text="${error}">
+        </div>
+
+        <section class="grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-6 items-start">
+
+            <section class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                <div class="bg-[#0d3b66] px-8 py-6">
+                    <h2 class="text-2xl font-bold text-white">
+                        Datos de la cuenta
+                    </h2>
+                    <p class="text-[#c0d6df] mt-1">
+                        Actualiza tu información de acceso.
+                    </p>
+                </div>
+
+                <form th:action="@{/configuracion/save}"
+                      method="post"
+                      class="p-8">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label class="block mb-2 font-bold text-[#0d3b66]">
+                                Nombre
+                            </label>
+                            <input type="text"
+                                   name="nombre"
+                                   required
+                                   th:value="${usuario.nombre}"
+                                   class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 font-bold text-[#0d3b66]">
+                                Correo
+                            </label>
+                            <input type="email"
+                                   name="correo"
+                                   required
+                                   th:value="${usuario.correo}"
+                                   class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 font-bold text-[#0d3b66]">
+                                Teléfono
+                            </label>
+                            <input type="text"
+                                   name="telefono"
+                                   required
+                                   th:value="${usuario.telefono}"
+                                   class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                        </div>
+
+                        <div>
+                            <label class="block mb-2 font-bold text-[#0d3b66]">
+                                Dirección
+                            </label>
+                            <input type="text"
+                                   name="direccion"
+                                   required
+                                   th:value="${usuario.direccion}"
+                                   class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block mb-2 font-bold text-[#0d3b66]">
+                                Nueva contraseña
+                            </label>
+                            <input type="password"
+                                   name="contrasena"
+                                   placeholder="Déjala vacía si no deseas cambiarla"
+                                   class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                        </div>
+
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8 pt-6 border-t border-gray-100">
+                        <button type="submit"
+                                class="btn-custom btn-principal justify-center">
+                            💾 Guardar configuración
+                        </button>
+                    </div>
+
+                </form>
+
+            </section>
+
+            <aside class="bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+                <div class="bg-[#0d3b66] px-8 py-6">
+                    <h2 class="text-2xl font-bold text-white">
+                        Sesión
+                    </h2>
+                    <p class="text-[#c0d6df] mt-1">
+                        Usuario conectado.
+                    </p>
+                </div>
+
+                <div class="p-8 space-y-4">
+
+                    <div class="dashboard-mini-stat">
+                        <span>ID usuario</span>
+                        <strong th:text="${usuario.id_usuarios}">0</strong>
+                    </div>
+
+                    <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                        <p class="text-sm font-bold text-[#0d3b66] uppercase">
+                            Nombre
+                        </p>
+                        <p class="font-bold mt-2" th:text="${usuario.nombre}"></p>
+                    </div>
+
+                    <div class="rounded-2xl bg-gray-50 border border-gray-100 p-5">
+                        <p class="text-sm font-bold text-[#0d3b66] uppercase">
+                            Correo
+                        </p>
+                        <p class="font-bold mt-2 text-[#a11692]" th:text="${usuario.correo}"></p>
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

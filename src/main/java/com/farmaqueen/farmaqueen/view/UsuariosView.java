@@ -53,7 +53,8 @@ public class UsuariosView
     @GetMapping("/view/usuarios/edit/{id}")
     public String edit(@PathVariable Long id, Model model)
     {
-        model.addAttribute("usuarios", usuariosRepository.findById(id).orElse(null));
+        Usuarios usuarios =  usuariosRepository.findById(id).orElse(null);
+        model.addAttribute("usuarios", usuarios);
         return "usuarios/form";
     }
 

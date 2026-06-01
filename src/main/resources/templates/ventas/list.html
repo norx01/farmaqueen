@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Ventas</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        principal: '#a11692',
+                        naranja: '#fc7a1e',
+                        azulClaro: '#c0d6df',
+                        verde: '#517664',
+                        oscuro: '#0d3b66'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-[#c0d6df] via-[#eef4f7] to-white min-h-screen">
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/layout :: sidebar('ventas')"></div>
+
+    <!-- CONTENIDO -->
+    <main class="flex-1 p-6 lg:p-10 overflow-hidden">
+
+        <!-- HEADER -->
+        <section class="page-header">
+
+            <div>
+                <small>Facturación</small>
+
+                <h1>
+                    Lista de Ventas
+                </h1>
+
+                <p>
+                    Consulta las ventas efectuadas y sus valores registrados.
+                </p>
+            </div>
+
+            <div class="buttons">
+                <a th:href="@{/view/ventas/form}"
+                   class="btn-custom btn-principal">
+                    🧾 Nueva Venta
+                </a>
+            </div>
+
+        </section>
+
+        <!-- ALERTAS -->
+        <div th:if="${message}"
+             class="alert-success-custom"
+             th:text="${message}">
+        </div>
+
+        <div th:if="${error}"
+             class="alert-error-custom"
+             th:text="${error}">
+        </div>
+
+        <!-- TABLA -->
+        <section class="card-table">
+
+            <div class="card-table-header">
+
+                <div>
+                    <h2>
+                        Ventas Registradas
+                    </h2>
+
+                    <p>
+                        Información general de facturación.
+                    </p>
+                </div>
+
+                <div class="search-box">
+
+                    <input type="text"
+                           id="searchInput"
+                           data-table-target="tablaVentas"
+                           placeholder="Buscar venta...">
+
+                    <span>🔍</span>
+
+                </div>
+
+            </div>
+
+            <div class="table-container">
+
+                <table class="custom-table" id="tablaVentas">
+
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Fecha y hora</th>
+                        <th>Medio de pago</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="venta : ${ventas}"
+                        class="clickable-row"
+                        th:onclick="|window.location.href='@{/view/ventas/detail/{id}(id=${venta.id_venta})}'|">
+
+                        <td class="text-id"
+                            th:text="${venta.id_venta}">
+                        </td>
+
+                        <td th:text="${venta.cliente.nombre}"></td>
+
+                        <td th:text="${#temporals.format(venta.fecha_hora, 'dd/MM/yyyy HH:mm')}"></td>
+
+                        <td th:text="${venta.medio_pago}"></td>
+
+                        <td th:text="${#lists.size(venta.detalles)}"></td>
+
+                        <td class="text-email"
+                            th:text="${venta.total}">
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script th:src="@{/js/script.js}"></script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login FARMAQUEEN</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        principal: '#a11692',
+                        naranja: '#fc7a1e',
+                        azulClaro: '#c0d6df',
+                        verde: '#517664',
+                        oscuro: '#0d3b66'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gradient-to-br from-[#c0d6df] via-[#eef4f7] to-white min-h-screen">
+
+<main class="min-h-screen grid grid-cols-1 lg:grid-cols-[1fr_520px]">
+
+    <section class="hidden lg:flex bg-[#0d3b66] text-white p-12 flex-col justify-between">
+
+        <div>
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#a11692] to-[#fc7a1e] flex items-center justify-center text-3xl shadow-lg">
+                🚀
+            </div>
+
+            <h1 class="text-5xl font-black mt-8">
+                FARMAQUEEN
+            </h1>
+
+            <p class="text-[#c0d6df] text-xl mt-4 max-w-xl">
+                Sistema de Gestión Integral para la farmacia.
+            </p>
+        </div>
+
+        <div class="rounded-[24px] bg-white/10 p-6">
+            <h2 class="font-bold text-2xl">
+                Control seguro
+            </h2>
+            <p class="text-[#c0d6df] mt-2">
+                Gestiona usuarios, clientes, productos, ventas, reportes e inventario desde un solo lugar.
+            </p>
+        </div>
+
+    </section>
+
+    <section class="flex items-center justify-center p-6 lg:p-12">
+
+        <div class="w-full max-w-md bg-white rounded-[30px] shadow-xl overflow-hidden">
+
+            <div class="bg-[#0d3b66] px-8 py-8">
+                <h2 class="text-3xl font-black text-white">
+                    Iniciar sesión
+                </h2>
+                <p class="text-[#c0d6df] mt-2">
+                    Ingresa con tu correo y contraseña.
+                </p>
+            </div>
+
+            <form th:action="@{/login}"
+                  method="post"
+                  class="p-8 space-y-6">
+
+                <div th:if="${message}"
+                     class="alert-success-custom"
+                     th:text="${message}">
+                </div>
+
+                <div th:if="${error}"
+                     class="alert-error-custom"
+                     th:text="${error}">
+                </div>
+
+                <div th:if="${sinUsuarios}"
+                     class="alert-error-custom">
+                    No hay usuarios registrados. Crea el primer usuario desde el módulo de usuarios.
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-bold text-[#0d3b66]">
+                        Correo
+                    </label>
+                    <input type="email"
+                           name="correo"
+                           required
+                           placeholder="correo@ejemplo.com"
+                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-bold text-[#0d3b66]">
+                        Contraseña
+                    </label>
+                    <input type="password"
+                           name="contrasena"
+                           required
+                           placeholder="Ingrese su contraseña"
+                           class="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 outline-none transition focus:border-[#a11692] focus:ring-4 focus:ring-[#a11692]/20">
+                </div>
+
+                <button type="submit"
+                        class="btn-custom btn-principal justify-center w-full">
+                    🔐 Entrar
+                </button>
+
+                <a th:if="${sinUsuarios}"
+                   th:href="@{/view/usuarios/form}"
+                   class="btn-custom btn-verde justify-center w-full">
+                    Crear primer usuario
+                </a>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

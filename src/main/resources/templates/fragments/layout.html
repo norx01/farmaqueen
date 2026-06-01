@@ -6,10 +6,10 @@
 <!-- =========================
      SIDEBAR FRAGMENT
 ========================= -->
-<div th:fragment="sidebar(modulo)">
+<div th:fragment="sidebar(modulo)" class="sidebar-container">
 
     <aside id="sidebar"
-           class="w-72 min-h-screen bg-[#0d3b66] text-white shadow-2xl flex flex-col transition-all duration-300">
+           class="w-72 min-h-screen h-full bg-[#0d3b66] text-white shadow-2xl flex flex-col transition-all duration-300">
 
         <!-- LOGO -->
         <div class="p-6 border-b border-white/10">
@@ -44,11 +44,13 @@
                      class="w-14 h-14 rounded-full border-4 border-[#fc7a1e] shadow-lg">
 
                 <div>
-                    <h2 class="font-bold text-lg">
+                    <h2 class="font-bold text-lg"
+                        th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.nombre : 'Administrador'}">
                         Administrador
                     </h2>
 
-                    <p class="text-sm text-[#c0d6df]">
+                    <p class="text-sm text-[#c0d6df]"
+                       th:text="${session.usuarioLogueado != null ? session.usuarioLogueado.correo : 'Panel principal'}">
                         Panel principal
                     </p>
                 </div>
@@ -154,6 +156,28 @@
                     </a>
                 </li>
 
+                <!-- VENTAS -->
+                <li>
+                    <a th:href="@{/view/ventas}"
+                       th:classappend="${modulo == 'ventas'} ? 'bg-[#a11692] shadow-lg scale-[1.02]' : ''"
+                       class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300
+                              hover:bg-[#a11692] hover:translate-x-1 group">
+
+                        <span class="text-2xl">🧾</span>
+
+                        <div>
+                            <p class="font-semibold">
+                                Ventas
+                            </p>
+
+                            <small class="text-[#c0d6df]">
+                                Facturación
+                            </small>
+                        </div>
+
+                    </a>
+                </li>
+
                 <!-- REPORTES -->
                 <li>
                     <a th:href="@{/reportes}"
@@ -192,6 +216,27 @@
 
                             <small class="text-[#c0d6df]">
                                 Preferencias
+                            </small>
+                        </div>
+
+                    </a>
+                </li>
+
+                <!-- SALIR -->
+                <li>
+                    <a th:href="@{/logout}"
+                       class="flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300
+                              hover:bg-[#fc7a1e] hover:translate-x-1 group">
+
+                        <span class="text-2xl">🚪</span>
+
+                        <div>
+                            <p class="font-semibold">
+                                Salir
+                            </p>
+
+                            <small class="text-[#c0d6df]">
+                                Cerrar sesión
                             </small>
                         </div>
 
